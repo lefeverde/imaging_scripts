@@ -1,3 +1,5 @@
+#!/Users/daniellefever/anaconda/bin/python
+
 from __future__ import division
 
 import os
@@ -20,7 +22,7 @@ def incell_tif_renamer(tif_dir, out_dir):
             new_tit = new_tit.strip('\)')
             new_tit = new_tit.strip('_') + '.tif'
             final_tit = out_dir + '/' + new_tit
-            out_str = 'cp ' + '\"' + i +'\"' + ' ' + final_tit
+            out_str = 'cp ' + '\"' + i +'\"' + ' ' + final_tit + '; rm \"' + i +'\"'
             subprocess.check_call((out_str), shell=True)
 
 def main():

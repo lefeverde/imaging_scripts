@@ -43,13 +43,13 @@ def macro_generator(inpath, fff_list, fiji_ijm='fiji_commands.ijm'):
         for fiji_file_string, out_file_string in fff_list:
             stitching_string = 'run(\"Grid/Collection stitching\", \"type=[Grid: row-by-row] order=[Right & Down                ] grid_size_x=3 grid_size_y=6 tile_overlap=0 first_file_index_i=1 directory=%s file_names=%s output_textfile_name=TileConfiguration.txt fusion_method=[Linear Blending] regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 computation_parameters=[Save computation time (but use more RAM)] image_output=[Fuse and display]\");' % (inpath, fiji_file_string)
 
+            #TODO Make pixel and voxel settings adjustable
+
+            properties_string = 'run(\"Properties...\", \"channels=1 slices=11 frames=1 unit=µm pixel_width=0.3250024 pixel_height=0.3250024 voxel_depth=10\");'
+
             save_fitc_image = 'saveAs("Tiff", \"%s\");' % (out_file_string) # kludge to get shit to work
 
-            f.write(stitching_string + '\n' +  save_fitc_image + '\n' + 'close();' + '\n')
-
-
-        #fused_image_name = os.path.join(outpath, ('dsred_stiched_z_%02d.tif') % (i))
-
+            f.write(stitching_string + '\n' + properties_string + '\n' + save_fitc_image + '\n' + 'close();' + '\n')
 
 
 def main():
@@ -73,7 +73,7 @@ def main():
         os.makedirs(args.o)
 
     outpath = os.path.abspath(args.o)
-        
+
 
 
     fff_list = fiji_formatted_filenames(outpath)

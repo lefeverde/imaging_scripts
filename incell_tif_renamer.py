@@ -1,4 +1,6 @@
 #!/Users/daniellefever/anaconda/bin/python
+# -*- coding: utf-8 -*-
+
 
 from __future__ import division
 
@@ -42,9 +44,19 @@ def main():
     args = parser.parse_args()
 
     inpath = args.i
-    if not os.path.exists(args.o):
-        os.makedirs(args.o)
-    incell_tif_renamer(args.i, args.o)
+
+    device_name, image_date = os.path.abspath(args.i).split('_')[-2:]
+    fixed_image_date = '_'.join(image_date.split('.')[0:3])
+    out_dir_handle = device_name + '_' + fixed_image_date + '_' + args.o
+
+
+
+    if not os.path.exists(out_dir_handle):
+        os.makedirs(out_dir_handle)
+
+    outpath = os.path.abspath(out_dir_handle)
+
+    incell_tif_renamer(inpath, outpath)
 
 if __name__ == '__main__':
     main()

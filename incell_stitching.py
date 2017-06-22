@@ -1,3 +1,7 @@
+#!/Users/daniellefever/anaconda/bin/python
+# -*- coding: utf-8 -*-
+
+
 from __future__ import division
 
 import os
@@ -45,12 +49,12 @@ def macro_generator(inpath, fff_list, fiji_ijm='fiji_commands.ijm'):
 
             #TODO Make pixel and voxel settings adjustable
 
-            properties_string = 'run(\"Properties...\", \"channels=1 slices=11 frames=1 unit=µm pixel_width=0.3250024 pixel_height=0.3250024 voxel_depth=10\");'
+            #properties_string = 'run(\"Properties...\", \"channels=1 slices=1 frames=1 unit=µm pixel_width=0.3250024 pixel_height=0.3250024 voxel_depth=10.0000000\");'
 
             save_fitc_image = 'saveAs("Tiff", \"%s\");' % (out_file_string) # kludge to get shit to work
 
-            f.write(stitching_string + '\n' + properties_string + '\n' + save_fitc_image + '\n' + 'close();' + '\n')
-
+            #f.write(stitching_string + '\n' + properties_string + '\n' + save_fitc_image + '\n' + 'close();' + '\n')
+            f.write(stitching_string + '\n'  + save_fitc_image + '\n' + 'close();' + '\n')
 
 def main():
     parser = argparse.ArgumentParser()
@@ -68,11 +72,14 @@ def main():
     args = parser.parse_args()
 
     inpath = os.path.abspath(args.i)
+    device_name, image_date = os.path.abspath(args.i).split('_')[-2:]
+    fixed_image_date = '_'.join(image_date.split('.')[0:3])
+    out_dir_handle = device_name + '_' + fixed_image_date + '_' + args.o
 
-    if not os.path.exists(args.o):
-        os.makedirs(args.o)
+    if not os.path.exists(out_dir_handle):
+        os.makedirs(out_dir_handle)
 
-    outpath = os.path.abspath(args.o)
+    outpath = os.path.abspath(out_dir_handle)
 
 
 

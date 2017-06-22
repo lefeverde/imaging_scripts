@@ -7,29 +7,36 @@ from __future__ import division
 import os
 import subprocess
 import argparse
+import re
 
 
-def incell_tif_renamer(tif_dir, out_dir):
-    #cur_files = os.listdir(tif_dir)
-    cur_files = [os.path.join(os.path.abspath(tif_dir), i) for i in os.listdir(tif_dir)]
+def incell_tif_renamer(tif_dir, out_dir='renamed_images'):
+    '''
+    This function takes a dir of tifs produced by the incell
+    and removes whitespace from the file names and puts them
+    into a new dir.
+
+    Right now, whitespace is simply removed and
+    other formatting is done.
+    '''
+    cur_files = os.listdir(tif_dir)
+    cur_dir_path = os.path.abspath(tif_dir)
     for i in cur_files:
-        '''
-        This function renames the incell image names to
-        remove whitespace and weird parens.
-        '''
+
+        cur_file_path = os.path.join(cur_dir_path, i)
         if i.split('.')[-1] == 'tif':
             space_sep_tit = i.split('.')[0].split()
-            new_tit = 'field'
-            for word in space_sep_tit[3:]:
-                new_tit = new_tit + '_' + word
-            new_tit = new_tit.strip('\)')
-            new_tit = new_tit.strip('_') + '.tif'
-            final_tit = out_dir + '/' + new_tit
-            #out_str = 'cp ' + '\"' + i +'\"' + ' ' + final_tit + '; rm \"' + i +'\"'
-            out_str = 'cp ' + '\"' + i +'\"' + ' ' + final_tit
+            new_tit = re.sub('\(|\)' ,'_',''.join(space_sep_tit) + '.tif')
+            out_path = os.path.join(cur_dir_path, out_dir)
+            if not os.path.exists(out_path):
+                os.makedirs(out_path)
+            out_handle = os.path.join(out_path, new_tit)
+            out_str = 'cp ' + '\"' + cur_file_path +'\"' + ' ' + out_handle
             subprocess.check_call((out_str), shell=True)
 
 def auto_folders_namer(inpath, out_str):
+    # TODO use os.walk to automagically go Down
+    # a dir tree
     '''
     Function to automatically name folders by
     getting the important info from the input
@@ -43,6 +50,7 @@ def auto_folders_namer(inpath, out_str):
 
 
 def main():
+
     parser = argparse.ArgumentParser()
     req = parser.add_argument_group('required arguments')
     opt = parser.add_argument_group('optional arguments')
